@@ -63,7 +63,8 @@
       };
 
       try {
-        const response = await fetch("https://script.google.com/macros/s/YOUR_DEPLOY_ID/exec", {
+        const url = "https://script.google.com/macros/s/AKfycbxr6-IbxAhNfJiOBZbd8ujjBZ5b-C5jt_LWVND-F0PwP0tlUdfh6-WU0Dyu-om3pQSgzg/exec?type=friendRequest"
+        const response = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
