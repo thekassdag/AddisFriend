@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>NewMate Friend Request</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 400px; margin: auto; }
+    h2 { text-align: center; }
+    label { display: block; margin-top: 10px; }
+    input, textarea, select, button { width: 100%; padding: 8px; margin-top: 4px; }
+    button { font-size: 16px; margin-top: 12px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background: #45a049; }
+    p#status { color: green; text-align: center; margin-top: 12px; }
+  </style>
+
+  <!-- Telegram Web App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <h2>Post Your Friend Request</h2>
+
+  <form id="friendRequestForm">
+    <label>Name:</label>
+    <input type="text" name="name" required>
+
+    <label>Looking for:</label>
+    <input type="text" name="lookingFor" required>
+
+    <label>Location(s) (comma separated):</label>
+    <input type="text" name="locations" required>
+
+    <label>Top Hobbies (comma separated):</label>
+    <input type="text" name="hobbies" required>
+
+    <button type="submit">Submit Request</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const form = document.getElementById('friendRequestForm');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+        status.textContent = "⚠️ Open this form inside Telegram!";
+        return;
+      }
+
+      const userId = tg.initDataUnsafe.user.id;
+
+      const data = {
+        userId,
+        name: form.name.value,
+        lookingFor: form.lookingFor.value,
+        locations: form.locations.value.split(',').map(s => s.trim()),
+        hobbies: form.hobbies.value.split(',').map(s => s.trim())
+      };
+
+      try {
+        const response = await fetch("https://script.google.com/macros/s/YOUR_DEPLOY_ID/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          status.textContent = "✅ Your friend request was posted!";
+          form.reset();
+          tg.close(); // optional
+        } else {
+          status.textContent = "❌ Something went wrong with the server.";
+          console.error(await response.text());
+        }
+      } catch (err) {
+        status.textContent = "❌ Network error. Check console.";
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
