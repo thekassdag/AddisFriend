@@ -1,89 +1,396 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>NewMate Friend Request</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AddisFriend | Join the Community</title>
+  
+  <!-- Tailwind CSS & Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Fredoka for headers, Quicksand for body -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+
   <style>
-    body { font-family: Arial; padding: 20px; max-width: 400px; margin: auto; }
-    h2 { text-align: center; }
-    label { display: block; margin-top: 10px; }
-    input, textarea, select, button { width: 100%; padding: 8px; margin-top: 4px; }
-    button { font-size: 16px; margin-top: 12px; background: #4CAF50; color: white; border: none; cursor: pointer; }
-    button:hover { background: #45a049; }
-    p#status { color: green; text-align: center; margin-top: 12px; }
+    :root {
+      --anime-pink: #ffafcc;
+      --anime-blue: #a2d2ff;
+      --anime-purple: #cdb4db;
+      --anime-dark: #2b2d42;
+      --anime-green: #bde0fe;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #fefae0 0%, #faedcd 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    .bg-decoration {
+      position: fixed;
+      z-index: -1;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 3px solid white;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .letter-content {
+      line-height: 2.2;
+      font-size: 1.15rem;
+      color: var(--anime-dark);
+      font-weight: 500;
+    }
+
+    .letter-input {
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed var(--anime-pink);
+      padding: 0 4px;
+      margin: 0 2px;
+      color: #ff4d6d;
+      font-weight: 700;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-align: center;
+      display: inline-block;
+    }
+
+    .letter-textarea {
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed var(--anime-pink);
+      color: #ff4d6d;
+      font-weight: 700;
+      font-family: inherit;
+      font-size: 1.15rem;
+      resize: none;
+      overflow: hidden;
+      width: 100%;
+      margin-top: 8px;
+      padding: 4px 8px;
+      display: block;
+      min-height: 2.5rem;
+      line-height: 1.4;
+      transition: all 0.3s;
+      border-radius: 8px;
+    }
+
+    .letter-input:focus, .letter-textarea:focus {
+      outline: none;
+      border-bottom-style: solid;
+      background: rgba(255, 175, 204, 0.1);
+    }
+
+    input[name="name"] { width: 140px; }
+    input[name="age"] { width: 50px; }
+    input[name="hobbies"] { width: 100%; margin-top: 8px; border-bottom: 2px dashed #a2d2ff; text-align: left; }
+
+    .location-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      margin: 2px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1.5px solid var(--anime-blue);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      user-select: none;
+      color: var(--anime-dark);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .location-tag.selected {
+      background: var(--anime-blue);
+      color: white;
+      transform: scale(1.08);
+      box-shadow: 0 4px 10px rgba(162, 210, 255, 0.4);
+    }
+
+    .location-tag.disabled:not(.selected) {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(1);
+    }
+
+    .inline-toggle {
+      display: inline-flex;
+      gap: 4px;
+      vertical-align: middle;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 3px;
+      border-radius: 20px;
+      border: 1.5px solid var(--anime-purple);
+      margin: 0 4px;
+      line-height: 1;
+    }
+
+    .toggle-dot {
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 700;
+    }
+
+    .toggle-dot.active {
+      background: var(--anime-purple);
+      color: white;
+    }
+
+    .submit-btn {
+      background: var(--anime-dark);
+      color: white;
+      font-family: 'Fredoka', sans-serif;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 1.5rem;
+    }
+
+    .submit-btn:hover {
+      background: #ff4d6d;
+      transform: scale(1.02) rotate(-1deg);
+      box-shadow: 0 10px 25px rgba(255, 77, 109, 0.3);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .status-msg {
+      animation: popIn 0.4s ease forwards;
+    }
+
+    .hint-text {
+      font-size: 0.75rem;
+      color: #718096;
+      font-weight: 600;
+      margin-top: 2px;
+    }
   </style>
 
   <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body>
-  <h2>Post Your Friend Request</h2>
 
-  <form id="friendRequestForm">
-    <label>Name:</label>
-    <input type="text" name="name" required>
+<body class="p-4">
+  <!-- Decorative Elements -->
+  <i class="fa-solid fa-cloud bg-decoration text-blue-200 text-9xl top-10 -left-10"></i>
+  <i class="fa-solid fa-star bg-decoration text-yellow-200 text-4xl top-40 right-10 animate-pulse"></i>
+  <i class="fa-solid fa-heart bg-decoration text-pink-200 text-6xl bottom-20 left-20 opacity-20"></i>
 
-    <label>Looking for:</label>
-    <input type="text" name="lookingFor" required>
+  <div class="glass-card w-full max-w-lg p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-bold text-gray-800">
+        <span class="text-pink-400">Addis</span>Friend <i class="fa-solid fa-envelope-open-text ml-1 text-2xl text-yellow-500"></i>
+      </h2>
+    </div>
 
-    <label>Location(s) (comma separated):</label>
-    <input type="text" name="locations" required>
+    <form id="friendRequestForm">
+      <div class="letter-content">
+        Hi there! 👋<br>
+        I am <input type="text" name="name" placeholder="Name" class="letter-input" required>, 
+        a <input type="number" name="age" placeholder="24" class="letter-input" required> year old 
+        <div class="inline-toggle">
+          <div id="maleBtn" class="toggle-dot active" data-value="M">M</div>
+          <div id="femaleBtn" class="toggle-dot" data-value="F">F</div>
+        </div>.
+        <br>
+        
+        I am looking from <span class="text-sm font-bold text-blue-400">(Pick up to 3)</span>:
+        <div id="locationSelector" class="mt-2 mb-2">
+          <!-- Locations will be injected here -->
+        </div>
 
-    <label>Top Hobbies (comma separated):</label>
-    <input type="text" name="hobbies" required>
+        for a friend who is:
+        <textarea name="lookingFor" id="lookingFor" maxlength="500" placeholder="Describe your ideal friend..." class="letter-textarea" required></textarea> 
+        
+        <div class="mt-4">
+          My top hobbies and interests are:
+          <input type="text" name="hobbies" id="hobbiesInput" maxlength="100" placeholder="Anime, Gaming, Coffee..." class="letter-input" required>
+          <div class="flex justify-between hint-text px-1">
+            <span>Comma separated (1-10 hobbies)</span>
+            <span id="charCount">0/100</span>
+          </div>
+        </div>
+        <br>
+        Let's be friends! ✨
+      </div>
 
-    <button type="submit">Submit Request</button>
-  </form>
+      <input type="hidden" name="gender" id="genderInput" value="M">
 
-  <p id="status"></p>
+      <button type="submit" class="submit-btn w-full py-4 text-lg font-bold mt-10">
+        Send My Request <i class="fa-solid fa-paper-plane ml-2"></i>
+      </button>
+    </form>
+
+    <p id="status" class="status-msg text-center mt-6 font-bold text-sm hidden"></p>
+  </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
     const form = document.getElementById('friendRequestForm');
+    const lookingForArea = document.getElementById('lookingFor');
+    const hobbiesInput = document.getElementById('hobbiesInput');
+    const charCount = document.getElementById('charCount');
     const status = document.getElementById('status');
+    const genderInput = document.getElementById('genderInput');
+    const maleBtn = document.getElementById('maleBtn');
+    const femaleBtn = document.getElementById('femaleBtn');
+    const locationSelector = document.getElementById('locationSelector');
+
+    lookingForArea.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+
+    hobbiesInput.addEventListener('input', function() {
+      charCount.textContent = `${this.value.length}/100`;
+    });
+
+    const locations = [
+      "Addis Ababa", "Dire Dawa", "Afar", "Amhara", "Benishangul-Gumuz", 
+      "Central Ethiopia", "Gambela", "Harari", "Oromia", "Sidama", 
+      "Somali", "South Ethiopia", "South West Ethiopia", "Tigray"
+    ];
+    let selectedLocations = [];
+
+    locations.forEach(loc => {
+      const tag = document.createElement('div');
+      tag.className = 'location-tag';
+      tag.textContent = loc;
+      tag.onclick = () => toggleLocation(loc, tag);
+      locationSelector.appendChild(tag);
+    });
+
+    function toggleLocation(loc, tagElement) {
+      const index = selectedLocations.indexOf(loc);
+      if (index > -1) {
+        selectedLocations.splice(index, 1);
+        tagElement.classList.remove('selected');
+      } else if (selectedLocations.length < 3) {
+        selectedLocations.push(loc);
+        tagElement.classList.add('selected');
+      }
+      
+      const tags = locationSelector.querySelectorAll('.location-tag');
+      tags.forEach(t => {
+        if (selectedLocations.length >= 3 && !t.classList.contains('selected')) {
+          t.classList.add('disabled');
+        } else {
+          t.classList.remove('disabled');
+        }
+      });
+    }
+
+    const setGender = (val) => {
+      genderInput.value = val;
+      if (val === 'M') {
+        maleBtn.classList.add('active');
+        femaleBtn.classList.remove('active');
+      } else {
+        femaleBtn.classList.add('active');
+        maleBtn.classList.remove('active');
+      }
+    };
+
+    maleBtn.addEventListener('click', () => setGender('M'));
+    femaleBtn.addEventListener('click', () => setGender('F'));
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
-        status.textContent = "⚠️ Open this form inside Telegram!";
+      const hobbiesList = hobbiesInput.value.split(',').map(s => s.trim()).filter(s => s !== '');
+      if (hobbiesList.length < 1 || hobbiesList.length > 10) {
+        showStatus("⚠️ Please list between 1 and 10 hobbies!", "text-amber-500");
         return;
       }
 
-      const userId = tg.initDataUnsafe.user.id;
+      if (selectedLocations.length === 0) {
+        showStatus("⚠️ Please select where you are looking from!", "text-amber-500");
+        return;
+      }
+
+      if (!tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+        showStatus("⚠️ Please open this in Telegram!", "text-amber-500");
+        return;
+      }
+
+      const submitBtn = form.querySelector('button');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Sending...';
 
       const data = {
-        userId,
+        type: "friendRequest",
         name: form.name.value,
+        age: form.age.value,
+        gender: genderInput.value,
         lookingFor: form.lookingFor.value,
-        locations: form.locations.value.split(',').map(s => s.trim()),
-        hobbies: form.hobbies.value.split(',').map(s => s.trim())
+        locations: selectedLocations,
+        hobbies: hobbiesList,
+        tgInitData: tg.initData
       };
 
       try {
-        const url = "https://script.google.com/macros/s/AKfycbw0U7MlrzRQ03vMeUia8RbqhMPQ2PsGBAtHlVseskJt6MhY8Z0pZTGCWdTjawn1eVKOEg/exec?type=friendRequest"
+        const url = "https://dykfgutpuolbhbtoftik.supabase.co/functions/v1/addis-friend"
         const response = await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          mode: "cors",
           body: JSON.stringify(data),
-          mode: "cors"
         });
 
         if (response.ok) {
-          status.textContent = "✅ Your friend request was posted!";
+          showStatus("✅ Success! Your letter has been sent ✨", "text-green-500");
           form.reset();
-          tg.close(); // optional
+          selectedLocations = [];
+          locationSelector.querySelectorAll('.location-tag').forEach(t => {
+            t.classList.remove('selected', 'disabled');
+          });
+          lookingForArea.style.height = 'auto';
+          setGender('M');
+          setTimeout(() => tg.close(), 2500);
+        } else if (response.status === 429) {
+          const errorData = await response.json();
+          showStatus(`⏰ ${errorData.message}`, "text-amber-500");
         } else {
-          status.textContent = "❌ Something went wrong with the server.";
-          console.error(await response.text());
+          showStatus("❌ Server error. Try again later.", "text-red-500");
         }
       } catch (err) {
-        status.textContent = "❌ Network error. Check console.";
-        console.error(err);
+        showStatus("❌ Network error. Check your connection.", "text-red-500");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send My Request <i class="fa-solid fa-paper-plane ml-2"></i>';
       }
     });
+
+    function showStatus(text, colorClass) {
+      status.textContent = text;
+      status.className = `status-msg text-center mt-6 font-bold text-sm ${colorClass}`;
+      status.classList.remove('hidden');
+    }
   </script>
 </body>
+
 </html>
