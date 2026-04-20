@@ -53,6 +53,38 @@
 -- optional (performance)
 - last_message_id
 
+# posts table
+id
+user_id (hashed/session_id reference, not real identity)
+content (text / optional encrypted blob ref)
+media_url (optional)
+media_type (image/video/audio/null)
+visibility (public / anonymous_room / private_match)
+created_at
+updated_at
+status (active / deleted / flagged / hidden)
+reaction_count (cached)
+comment_count (cached)
+report_count (cached)
+
+# comments table
+id
+post_id (fk → posts.id)
+user_id (session_id / hashed_user_ref)
+parent_comment_id (nullable, for threads/replies)
+content
+created_at
+status (active / deleted / hidden / flagged)
+reaction_count (cached)
+report_count (cached)
+
+# reactions table
+id
+user_id (session_id / hashed_user_ref)
+target_type (post / comment)
+target_id
+reaction_type (like / love / laugh / sad / angry etc.)
+created_at
 
 
 You MUST enforce:
