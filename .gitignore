@@ -1,3 +1,5 @@
 .agents
 SKILL.md
 skills-lock.json
+node_modules
+.env
